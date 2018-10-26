@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <title>
+            pokemon
+        </title>
+    </head>
+    <body>
+        <script language = "javascript">
+         var xmlhttp = new XMLHttpRequest();
+         var url = "https://pokeapi.co/api/v2/";
+
+        function search_for_pokemon()
+        {
+            var searched = document.getElementById("search_field").value;
+            xmlhttp.open("GET",url+'pokemon/'+searched + '/',true);
+            xmlhttp.onload = function()
+            {
+                var data = JSON.parse(this.response);
+                document.getElementById("pokemon_name").innerHTML = data.name;
+                document.getElementById("pokemon_image").innerHTML = '<img src="' + data.sprites.front_default + '">';
+                document.getElementById("pokemon_types").innerHTML = "<h1>Types</h1>"
+                data.types.forEach(type => {
+                    document.getElementById("pokemon_types").innerHTML += '<li>' + type.type.name + '</li>'
+                    
+                    var td = new XMLHttpRequest();
+                    td.open('GET', url+'type/'+type.type.name+'/' , true);
+                    td.onload = function () {
+                        var type_details = JSON.parse(this.response);
+                        type_details.pokemon.forEach(type => {
+                        });
+                            document.getElementById("pokemon_weakness").innerHTML = "<h1>Weak Against</h1>"
+                            type_details.damage_relations.double_damage_from.forEach(type => {
+                                document.getElementById("pokemon_weakness").innerHTML += '<li>' + type.name + '</li>';
+                            });
+                    }
+                    td.send();
+
+                });
+            }
+            xmlhttp.send();
+        }
+        
+         </script>
+         <style>
+           button{
+               width:80px;
+               height:30px;
+               font-size:20px;
+               background-color:mediumorchid;
+               border:4px mediumorchid solid;
+               color:white;
+           }
+           input[type="text"]{
+               height:30px;
+               border:4px black solid;
+               color:black;
+               font-size:15px;
+           }
+
+         </style>
+         <div>
+            <h3>ENTER A POKEMON NAME</h3>
+            <input type="text" id="search_field"/>
+            <button onclick="search_for_pokemon()">Search</button>
+         </div>
+         <div>
+             <div id="pokemon_name"></div>
+             <div id="pokemon_image"></div>
+             <div id="pokemon_types"></div>
+             <div id="pokemon_weakness"></div>
+         </div>
+    </body>
+</html>
